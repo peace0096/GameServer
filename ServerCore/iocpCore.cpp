@@ -1,10 +1,11 @@
 #include "pch.h"
-#include "iocpCore.h"
+#include "IocpCore.h"
 #include "IocpEvent.h"
 
 /*
 	iocpCore
 */
+IocpCore GIocpCore;
 
 IocpCore::IocpCore()
 {

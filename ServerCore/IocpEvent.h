@@ -1,5 +1,7 @@
 #pragma once
 
+class Session;
+
 /*
 	EventType
 */
@@ -47,6 +49,12 @@ class AcceptEvent : public IocpEvent
 {
 public:
 	AcceptEvent() : IocpEvent(EventType::Accept) { };
+
+	void		SetSession(Session* session) { _session = session; }
+	Session*	GetSession() { return _session; }
+
+private:
+	Session*	_session = nullptr;
 };
 
 
