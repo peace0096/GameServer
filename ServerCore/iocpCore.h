@@ -5,7 +5,7 @@
 
 	iocpEvent는 Overlapped 구조체를 받아와서 recv/write 등의 상태를 판단
 */
-class IocpObject
+class IocpObject : public enable_shared_from_this<IocpObject>	// 자기자신에 대한 weak_ptr을 갖게 됨.
 {
 public:
 	virtual HANDLE GetHandle() abstract;
