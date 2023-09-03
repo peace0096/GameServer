@@ -104,7 +104,7 @@ void Session::ProcessConnect()
 void Session::ProcessRecv(int32 numOfBytes)
 {
 
-	// 이거 안 해주면 소멸이 안됨.
+	// 이거 안 해주면 Session이 소멸이 안됨.
 	_recvEvent.owner = nullptr;		// Release_Ref
 
 	// Recv 실패했을 경우
