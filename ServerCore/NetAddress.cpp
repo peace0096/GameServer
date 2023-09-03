@@ -16,7 +16,7 @@ NetAddress::NetAddress(wstring ip, uint16 port)
 wstring NetAddress::GetAddress()
 {
 	WCHAR buffer[100];
-	::InetNtopW(AF_INET, &_sockAddr.sin_addr, buffer, len32(buffer)));	//Types.h에 매크로 정의.
+	::InetNtopW(AF_INET, &_sockAddr.sin_addr, buffer, len32(buffer));	//Types.h에 매크로 정의.
 	return wstring(buffer);
 }
 

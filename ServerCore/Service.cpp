@@ -22,6 +22,7 @@ void Service::CloseService()
 SessionRef Service::CreateSession()
 {
 	SessionRef session = _sessionFactory();
+	session->SetService(shared_from_this());
 
 	// 세션 등록 실패했을 경우
 	if (_iocpCore->Register(session) == false)
