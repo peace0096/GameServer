@@ -35,11 +35,12 @@ public:
 #endif
 		
 	}
-
-	static shared_ptr<Type> MakeShared()
+	
+	template<typename... Args>
+	static shared_ptr<Type> MakeShared(Args&&... args)
 	{
 		// 두번째 인자로 삭제
-		shared_ptr<Type> ptr = { Pop(), Push };
+		shared_ptr<Type> ptr = { Pop(forward<Args>(args)...), Push };
 		return ptr;
 
 	}
