@@ -71,4 +71,7 @@ class SendEvent : public IocpEvent
 {
 public:
 	SendEvent() : IocpEvent(EventType::Send) { };
+
+	// TEMP -> WSASend가 겹치면 안되기 때문임.
+	vector<BYTE> buffer;
 };
