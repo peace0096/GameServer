@@ -60,6 +60,8 @@ class ClientService : public Service
 public:
 	ClientService(NetAddress address, IocpCoreRef core, SessionFactory factory, int32 maxSessionCount = 1);
 	virtual ~ClientService();
+
+	virtual bool	Start() override;
 };
 
 
