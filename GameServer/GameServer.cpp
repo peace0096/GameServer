@@ -37,18 +37,9 @@ int main()
 	ASSERT_CRASH(service->Start());
 	
 
-	for (int32 i = 0; i < 5; i++)
+	while (true)
 	{
-		GThreadManager->Launch([=]()
-			{
-				while (true)
-				{
-					service->GetIocpCore()->Dispatch();
-				}
-			});
+		service->GetIocpCore()->Dispatch();
 	}
-
-	
-	GThreadManager->Join();
 }
 
