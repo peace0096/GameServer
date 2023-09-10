@@ -29,7 +29,7 @@ public:
 
 public:
 						/* 외부에서 사용 */
-	void				Send(BYTE* buffer, int32 len);
+	void				Send(SendBufferRef sendBuffer);
 	bool				Connect();
 	void				Disconnect(const WCHAR* cause);	// 강제 연결종료
 
@@ -52,44 +52,47 @@ private:
 
 private:
 						/* 전송 관련 */
-	bool				RegisterConnect();
-	bool				RegisterDisconnect();
-	void				RegisterRecv();
-	void				RegisterSend(SendEvent* sendEvent);
+	bool					RegisterConnect();
+	bool					RegisterDisconnect();
+	void					RegisterRecv();
+	void					RegisterSend();
 	
-	void				ProcessConnect();
-	void				ProcessDisconnect();
-	void				ProcessRecv(int32 numOfBytes);
-	void				ProcessSend(SendEvent* sendEvent, int32 numOfBytes);
+	void					ProcessConnect();
+	void					ProcessDisconnect();
+	void					ProcessRecv(int32 numOfBytes);
+	void					ProcessSend(int32 numOfBytes);
 	
-	void				HandleError(int32 errorCode);
+	void					HandleError(int32 errorCode);
 
 protected:
 						/* 컨텐츠 코드에서 오버로딩 */
-	virtual void		OnConnected() { }
-	virtual int32		OnRecv(BYTE* buffer, int32 len) { return len; }
-	virtual void		OnSend(int32 len) { }
-	virtual void		OnDisconnected() { }
+	virtual void			OnConnected() { }
+	virtual int32			OnRecv(BYTE* buffer, int32 len) { return len; }
+	virtual void			OnSend(int32 len) { }
+	virtual void			OnDisconnected() { }
 
 private:
-	weak_ptr<Service>	_service;
-	SOCKET			_socket = INVALID_SOCKET;
-	NetAddress		_netAddress = {};
-	Atomic<bool>	_connected = false;
+	weak_ptr<Service>		_service;
+	SOCKET					_socket = INVALID_SOCKET;
+	NetAddress				_netAddress = {};
+	Atomic<bool>			_connected = false;
 
 private:
 	USE_LOCK;
 	
 						/* 수신 관련 */
-	RecvBuffer			_recvBuffer;
+	RecvBuffer				_recvBuffer;
 
 
 	/* 송신 관련 */
+	Queue<SendBufferRef>	_sendQueue;
+	Atomic<bool>			_sendRegistered = false;	// 이벤트 등록도중, WSASend가 실행되면 큐에만 넣고 빠져나가게 할 것임.
 
 private:
 						/* IocpEvent 재사용 */
-	ConnectEvent		_connectEvent;
-	DisconnectEvent		_disconnectEvent;
-	RecvEvent			_recvEvent;
+	ConnectEvent			_connectEvent;
+	DisconnectEvent			_disconnectEvent;
+	RecvEvent				_recvEvent;
+	SendEvent				_sendEvent;
 };
 
