@@ -41,7 +41,7 @@ void Session::Send(SendBufferRef sendBuffer)
 	if (IsConnected() == false)
 		return;
 
-	bool reigsteredSend = false;
+	bool registeredSend = false;
 
 
 	// 현재 RegisterSend가 걸리지 않은 상태라면, 걸어준다
@@ -52,10 +52,10 @@ void Session::Send(SendBufferRef sendBuffer)
 		// true로 바꾼다. 만약 바꾸기 전의 값이 false라면.
 		if (_sendRegistered.exchange(true) == false)
 		{
-			RegisterSend();
+			registeredSend = true;
 		}
 	}
-	if (reigsteredSend)
+	if (registeredSend)
 		RegisterSend();
 	
 }
@@ -325,4 +325,41 @@ void Session::HandleError(int32 errorCode)
 		cout << "Handle Error : " + errorCode << endl;
 		break;
 	}
+}
+
+PacketSession::PacketSession()
+{
+}
+
+PacketSession::~PacketSession()
+{
+}
+
+int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
+{
+	int32 processLen = 0;
+
+	while (true)
+	{
+		int32 dataSize = len - processLen;
+		// 최소한 헤더는 파싱할 수 있어야 한다.
+		if (dataSize < sizeof(PacketHeader))
+			break;
+
+		// 받아온 버퍼를 헤더로 캐스팅한다
+		PacketHeader header = *(reinterpret_cast<PacketHeader*>(&buffer[processLen]));
+
+		// 헤더에 기록된 패킷 크기를 파싱할 수 있어야 한다
+		if (dataSize < header.size)
+			break;
+
+		// 패킷 조립 성공
+		// SendBuffer가 풀링 처리되어있어서, 패킷 시작점부터 받아야함
+		OnRecvPacket(&buffer[processLen], header.size);
+
+		processLen += header.size;
+
+
+	}
+	return int32();
 }

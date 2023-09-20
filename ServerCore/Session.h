@@ -100,6 +100,28 @@ private:
 // 나중에 송수신할 데이터들이 많아지면 tcp 특성상 여러 개로 쪼개서 전달될 것임
 // 그래서 전체패킷이 도착했는지 확인할 수단이 필요함
 // 우리만의 프로토콜을 정의해야 한다!
+
 /*
 	PacketSession
 */
+
+// 패킷 종류를 알려주는 녀석
+struct PacketHeader
+{
+	uint16 size;
+	uint16 id; // 프로토콜 ID (ex 1 = 로그인, 2=이동요청)
+
+};
+
+class PacketSession : public Session
+{
+public:
+	PacketSession();
+	virtual ~PacketSession();
+
+	PacketSessionRef GetPacketSession() { return static_pointer_cast<PacketSession>(shared_from_this()); }
+
+protected:
+	virtual int32 OnRecv(BYTE* buffer, int32 len) sealed;	// 앞으로, PacketSession을 상속받는 친구는 onRecv를 재정의를 할 수 없다.
+	virtual int32 OnRecvPacket(BYTE* buffer, int32 len) abstract;	// 추상화만 되어있음. 무조건 구현해줘야 한다!
+};
