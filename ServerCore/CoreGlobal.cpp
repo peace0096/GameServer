@@ -19,6 +19,7 @@ public:
 		GThreadManager = new ThreadManager();
 		GMemory = new Memory();
 		GDeadLockProfiler = new DeadLockProfiler();
+		GSendBufferManager = new SendBufferManager();
 		SocketUtils::Init();
 	}
 	~CoreGlobal()
@@ -26,6 +27,7 @@ public:
 		delete GThreadManager;
 		delete GMemory;
 		delete GDeadLockProfiler;
+		delete GSendBufferManager;
 		SocketUtils::Clear();
 	}
 };

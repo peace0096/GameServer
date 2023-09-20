@@ -38,16 +38,26 @@ Session::~Session()
 
 void Session::Send(SendBufferRef sendBuffer)
 {
+	if (IsConnected() == false)
+		return;
+
+	bool reigsteredSend = false;
+
+
 	// 현재 RegisterSend가 걸리지 않은 상태라면, 걸어준다
 	WRITE_LOCK;
-
-	_sendQueue.push(sendBuffer);
-
-	// true로 바꾼다. 만약 바꾸기 전의 값이 false라면.
-	if (_sendRegistered.exchange(true) == false)
 	{
-		RegisterSend();
+		_sendQueue.push(sendBuffer);
+
+		// true로 바꾼다. 만약 바꾸기 전의 값이 false라면.
+		if (_sendRegistered.exchange(true) == false)
+		{
+			RegisterSend();
+		}
 	}
+	if (reigsteredSend)
+		RegisterSend();
+	
 }
 
 // 서버끼리 연결해야 될 수도 있기 때문에 구현.
