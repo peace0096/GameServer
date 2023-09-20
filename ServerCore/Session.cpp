@@ -73,10 +73,6 @@ void Session::Disconnect(const WCHAR* cause)
 
 	wcout << "Disconnected : " << cause << endl;
 
-	OnDisconnected();	// 컨텐츠 코드에서 재정의
-	SocketUtils::Close(_socket);
-	GetService()->ReleaseSession(GetSessionRef());
-
 	RegisterDisconnect();
 }
 
@@ -252,6 +248,11 @@ void Session::ProcessConnect()
 void Session::ProcessDisconnect()
 {
 	_disconnectEvent.owner = nullptr;	// Release_ref
+
+	// 주의 : Ref Count를 감소시킨다음 disconnect해야 릴리즈시켜야 smart pointer ref 문제가 발생하지 않음
+	OnDisconnected();	// 컨텐츠 코드에서 재정의
+	SocketUtils::Close(_socket);
+	GetService()->ReleaseSession(GetSessionRef());
 }
 
 void Session::ProcessRecv(int32 numOfBytes)
