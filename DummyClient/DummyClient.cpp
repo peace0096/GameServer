@@ -2,6 +2,7 @@
 #include "ThreadManager.h"
 #include "Service.h"
 #include "Session.h"
+#include "BufferReader.h"
 
 char sendData[] = "Hello World";
 
@@ -16,11 +17,21 @@ public:
 
 	virtual int32 OnRecvPacket(BYTE* buffer, int32 len) override
 	{
-		PacketHeader header = *((PacketHeader*)buffer);
-		cout << "Packet ID : " << header.id << " Size : " << header.size << endl;
+		BufferReader br(buffer, len);
+
+		PacketHeader header;
+		br >> header;
+
+		uint64 id;
+		uint32 hp;
+		uint16 attack;
+		br >> id >> hp >> attack;
+
+		cout << "ID : " << id << " HP : " << hp << " ATT : " << attack << endl;
 
 		char recvBuffer[4096];
-		::memcpy(recvBuffer, &buffer[4], header.size - sizeof(PacketHeader));
+		// 가변길이 때문에 8 4 2를 각각 빼줘야 함. 나중엔 이 가변길이도 버퍼에 포함해서 던져주면 좋겠죠?
+		br.Read(recvBuffer, header.size - sizeof(PacketHeader) - 8 - 4 - 2);
 		cout << recvBuffer << endl;
 
 		return len;
