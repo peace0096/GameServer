@@ -7,6 +7,7 @@
 #include "GameSessionManager.h"
 #include "BufferWriter.h"
 #include "ServerPacketHandler.h"
+#include <tchar.h>
 
 int main()
 {
@@ -31,13 +32,17 @@ int main()
 			});
 	}
 	
-	char sendData[1000] = "Hello World";
-	
+	//char sendData[1000] = "가";		// CP949 = KS-X-1001(한글2바이트) + KS-X-1003(로마1바이트)
+	//char sendData2[1000] = u8"가";	// UTF-8 = Unicode(한글3바이트 + 로마1바이트)
+	//WCHAR sendData3[1000] = L"가";	// UTF-16 = Unicode(한글/로마 2바이트)
+	//TCHAR sendData4[1000] = _T("가");	// 프로젝트 설정 -> 문자 집합 설정에 따라 설정된다.
+
+	// 비용이 싼 WCHAR를 통신에 이용하는 것이 바람직할 것이다!
 
 	while (true)
 	{
 		vector<BuffData> buffs = { BuffData { 100, 1.5f}, BuffData { 200, 2.3f},BuffData { 300, 0.7f} };
-		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_TEST(1001, 100, 10, buffs);
+		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_TEST(1001, 100, 10, buffs, L"안녕하세요");
 
 		GSessionManager.Broadcast(sendBuffer);
 

@@ -21,6 +21,8 @@ struct S_TEST
 	// 2) 그냥 바이트 배열? (길드 이미지 같은 정보)
 	// 3) 리스트
 	vector<BuffData> buffs;
+
+	wstring name;
 };
 
 class ClientPacketHandler
