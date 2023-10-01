@@ -123,5 +123,5 @@ public:
 
 protected:
 	virtual int32 OnRecv(BYTE* buffer, int32 len) sealed;	// 앞으로, PacketSession을 상속받는 친구는 onRecv를 재정의를 할 수 없다.
-	virtual int32 OnRecvPacket(BYTE* buffer, int32 len) abstract;	// 추상화만 되어있음. 무조건 구현해줘야 한다!
+	virtual void OnRecvPacket(BYTE* buffer, int32 len) abstract;	// 추상화만 되어있음. 무조건 구현해줘야 한다!
 };

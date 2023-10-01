@@ -12,15 +12,19 @@
     <ClCompile Include="DummyClient.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="pch.cpp" />
     <ClCompile Include="ClientPacketHandler.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h" />
     <ClInclude Include="ClientPacketHandler.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
