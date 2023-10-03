@@ -51,6 +51,9 @@ struct PKT_S_TEST
 		uint32 size = 0;
 
 		size += sizeof(PKT_S_TEST);
+		if (packetSize < size)
+			return false;
+
 		size += buffsCount * sizeof(BuffsListItem);
 		if (size != packetSize)
 			return false;
@@ -59,6 +62,15 @@ struct PKT_S_TEST
 			return false;
 
 		return true;
+	}
+
+	using BuffsList = PacketList<PKT_S_TEST::BuffsListItem>;
+
+	BuffsList GetBuffsList()
+	{
+		BYTE* data = reinterpret_cast<BYTE*>(this);
+		data += buffsOffset;
+		return BuffsList(reinterpret_cast<PKT_S_TEST::BuffsListItem*>(data), buffsCount);
 	}
 };
 #pragma pack()
@@ -69,28 +81,21 @@ void ClientPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)
 {
 	BufferReader br(buffer, len);
 
-	if (len < sizeof(PKT_S_TEST))
-		return;
+	// 받아온 버퍼를 바로 구조체에 대입!
+	PKT_S_TEST* pkt = reinterpret_cast<PKT_S_TEST*>(buffer);
 
-	PKT_S_TEST pkt;
-	br >> pkt;
+	//PKT_S_TEST pkt;
+	//br >> pkt;
 
 	// cout << "ID : " << id << " HP : " << hp << " ATT : " << attack << endl;
 
-	if (pkt.Validate() == false)
+	if (pkt->Validate() == false)
 		return;
 
+	PKT_S_TEST::BuffsList buffs = pkt->GetBuffsList();
 
-	vector<PKT_S_TEST::BuffsListItem> buffs;
-
-	buffs.resize(pkt.buffsCount);
-	for (int32 i = 0; i < pkt.buffsCount; i++)
-	{
-		br >> buffs[i];
-	}
-
-	cout << "BufCount : " << pkt.buffsCount << endl;
-	for (int32 i = 0; i < pkt.buffsCount; i++)
+	cout << "BufCount : " << buffs.Count() << endl;
+	for (int32 i = 0; i < buffs.Count(); i++)
 	{
 		cout << "BufInfo : " << buffs[i].buffId << " " << buffs[i].remainTime << endl;
 	}
