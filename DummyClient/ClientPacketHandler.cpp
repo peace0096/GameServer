@@ -2,13 +2,16 @@
 #include "ClientPacketHandler.h"
 #include "BufferReader.h"
 
+enum
+{
+	S_TEST = 1
+};
+
 void ClientPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 {
 	BufferReader br(buffer, len);
-
 	PacketHeader header;
 	br >> header;
-
 	// 헤더 아이디에 따른 분기 처리
 	switch (header.id)
 	{
@@ -16,49 +19,80 @@ void ClientPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 		Handle_S_TEST(buffer, len);
 		break;
 	}
-
-	
 }
+
+#pragma pack(1)		// 구조체 바이트 할당할 때 자주 사용된다.
+// 패킷 설계 Temp
+
+
+// [ PKT_S_TEST ][BuffsListItem BuffsListItem BuffsListItem]
+struct PKT_S_TEST
+{
+	struct BuffsListItem
+	{
+		uint64 buffId;
+		float remainTime;
+	};
+
+	uint16 packetSize;  // 공용 헤더
+	uint16 packetId;	// 공용 헤더	-> 헤더역할을 하고 있으므로 헤더 클래스 필요없음
+	uint64 id;	// 8
+	uint32 hp;	// 4
+	uint16 attack;	// 2
+
+	// 가변데이터 데이터셋
+	uint16 buffsOffset;
+	uint16 buffsCount;
+	//vector<BuffData> buffs;
+	//wstring name;
+
+	bool Validate()
+	{
+		uint32 size = 0;
+
+		size += sizeof(PKT_S_TEST);
+		size += buffsCount * sizeof(BuffsListItem);
+		if (size != packetSize)
+			return false;
+
+		if (buffsOffset + buffsCount * sizeof(BuffsListItem) > packetSize)
+			return false;
+
+		return true;
+	}
+};
+#pragma pack()
+
+
 
 void ClientPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)
 {
 	BufferReader br(buffer, len);
 
-	PacketHeader header;
-	br >> header;
+	if (len < sizeof(PKT_S_TEST))
+		return;
 
-	uint64 id;
-	uint32 hp;
-	uint16 attack;
-	br >> id >> hp >> attack;
+	PKT_S_TEST pkt;
+	br >> pkt;
 
-	cout << "ID : " << id << " HP : " << hp << " ATT : " << attack << endl;
+	// cout << "ID : " << id << " HP : " << hp << " ATT : " << attack << endl;
 
-	vector<BuffData> buffs;
-	uint16 buffCount;
+	if (pkt.Validate() == false)
+		return;
 
-	br >> buffCount;
 
-	buffs.resize(buffCount);
-	for (int32 i = 0; i < buffCount; i++)
+	vector<PKT_S_TEST::BuffsListItem> buffs;
+
+	buffs.resize(pkt.buffsCount);
+	for (int32 i = 0; i < pkt.buffsCount; i++)
 	{
-		br >> buffs[i].buffId >> buffs[i].remainTime;
+		br >> buffs[i];
 	}
 
-	cout << "BufCount : " << buffCount << endl;
-	for (int32 i = 0; i < buffCount; i++)
+	cout << "BufCount : " << pkt.buffsCount << endl;
+	for (int32 i = 0; i < pkt.buffsCount; i++)
 	{
 		cout << "BufInfo : " << buffs[i].buffId << " " << buffs[i].remainTime << endl;
 	}
-
-	wstring name;
-	uint16 nameLen;
-	br >> nameLen;
-	name.resize(nameLen);
-
-	br.Read((void*)name.data(), nameLen * sizeof(WCHAR));
-
-	// 한국어 설정
-	wcout.imbue(std::locale("kor"));
-	wcout << name << endl;
 }
+
