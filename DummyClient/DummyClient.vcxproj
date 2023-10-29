@@ -71,9 +71,21 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)ServerCore\\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Libraries\\;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)Binary\$(Configuration)\</OutDir>
+    <LibraryPath>$(SolutionDir)Libraries\Libs\ServerCore\;$(SolutionDir)Libraries\Libs\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)ServerCore\;$(SolutionDir)Libraries\include\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LibraryPath>$(SolutionDir)Libraries\Libs\ServerCore\;$(SolutionDir)Libraries\Libs\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)ServerCore\;$(SolutionDir)Libraries\include\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LibraryPath>$(SolutionDir)Libraries\Libs\ServerCore\;$(SolutionDir)Libraries\Libs\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)ServerCore\;$(SolutionDir)Libraries\include\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LibraryPath>$(SolutionDir)Libraries\Libs\ServerCore\;$(SolutionDir)Libraries\Libs\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)ServerCore\;$(SolutionDir)Libraries\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -134,6 +146,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\GameServer\Protocol.pb.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="ClientPacketHandler.cpp" />
     <ClCompile Include="DummyClient.cpp" />
     <ClCompile Include="pch.cpp">
@@ -147,6 +165,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\GameServer\Protocol.pb.h" />
     <ClInclude Include="ClientPacketHandler.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
