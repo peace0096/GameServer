@@ -8,6 +8,7 @@
 #include "BufferWriter.h"
 #include "ServerPacketHandler.h"
 #include <tchar.h>
+#include "Protocol.pb.h"
 
 int main()
 {
@@ -41,35 +42,31 @@ int main()
 
 	while (true)
 	{
-		// 패킷 생성
-		// [ PKT_S_TEST ]
-		PKT_S_TEST_WRITE pktWriter(1001, 100, 10);
+		// 패킷 버퍼 채우기
 
-		// [ PKT_S_TEST ] [BuffsListItem BuffsListItem BuffsListItem]
-		PKT_S_TEST_WRITE::BuffsList buffList = pktWriter.ReserveBuffsList(3);
-		buffList[0] = { 100, 1.5f };
-		buffList[1] = { 200, 2.3f };
-		buffList[2] = { 300, 0.7f };
+		Protocol::S_TEST pkt;
+		pkt.set_id(1000);
+		pkt.set_hp(100);
+		pkt.set_attack(10);
 
-		PKT_S_TEST_WRITE::BuffsVictimsList vic0 = pktWriter.ReserveBuffsVictimsList(&buffList[0], 3);
+
 		{
-			vic0[0] = 1000;
-			vic0[1] = 1000;
-			vic0[2] = 1000;
+			Protocol::BuffData* data = pkt.add_buffs();
+			data->set_buffid(100);
+			data->set_remaintime(1.2f);
+			data->add_victims(4000);
 		}
 
-		PKT_S_TEST_WRITE::BuffsVictimsList vic1 = pktWriter.ReserveBuffsVictimsList(&buffList[1], 1);
 		{
-			vic1[0] = 1000;
+			Protocol::BuffData* data = pkt.add_buffs();
+			data->set_buffid(200);
+			data->set_remaintime(2.5f);
+			data->add_victims(1000);
+			data->add_victims(2000);
 		}
 
-		PKT_S_TEST_WRITE::BuffsVictimsList vic2 = pktWriter.ReserveBuffsVictimsList(&buffList[2], 2);
-		{
-			vic2[0] = 1000;
-			vic2[1] = 1000;
-		}
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 
-		SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 		GSessionManager.Broadcast(sendBuffer);
 
 		this_thread::sleep_for(250ms);

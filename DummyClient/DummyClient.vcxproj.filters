@@ -7,7 +7,7 @@
     <Filter Include="Utils">
       <UniqueIdentifier>{69205348-9812-4a80-919f-39e0db0813b8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Main\Protocol">
+    <Filter Include="Protocol">
       <UniqueIdentifier>{dd065dec-4b2a-49c7-bda1-0d8ab0d7aaa5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -21,8 +21,8 @@
     <ClCompile Include="pch.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\GameServer\Protocol.pb.cc">
-      <Filter>Main\Protocol</Filter>
+    <ClCompile Include="Protocol.pb.cc">
+      <Filter>Protocol</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -32,11 +32,8 @@
     <ClInclude Include="pch.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\GameServer\Protocol.pb.h">
-      <Filter>Main\Protocol</Filter>
+    <ClInclude Include="Protocol.pb.h">
+      <Filter>Protocol</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="PDL.xml" />
   </ItemGroup>
 </Project>
