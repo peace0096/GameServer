@@ -9,31 +9,34 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 {
 	PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
 	// TODO : Log
-	return true;
-}
-
-bool Handle_S_TEST(PacketSessionRef& session, Protocol::S_TEST& pkt)
-{
-	cout << pkt.id() << " " << pkt.hp() << " " << pkt.attack() << endl;
-	cout << "BuffSize : " << pkt.buffs_size() << endl;
-	
-	for (auto& buf : pkt.buffs())
-	{
-		cout << "BUFINFO : " << buf.buffid() << " " << buf.remaintime() << endl;
-		cout << "VICTIMS : " << buf.victims_size() << endl;
-		for (auto& vic : buf.victims())
-		{
-			cout << vic << " ";
-		}
-
-		cout << endl;
-	}
-
-	return true;
+	return false;
 }
 
 
 bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt)
 {
+	if (pkt.success() == false)
+		return true;
+	if (pkt.players().size() == 0)
+	{
+
+	}
+
+	Protocol::C_ENTER_GAME enterGamePkt;
+	enterGamePkt.set_playerindex(0);
+	auto sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
+	session->Send(sendBuffer);
+
+	return true;
+}
+
+bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt)
+{
+	return true;
+}
+
+bool Handle_S_CHAT(PacketSessionRef& session, Protocol::S_CHAT& pkt)
+{
+	cout << pkt.msg() << '\n';
 	return true;
 }

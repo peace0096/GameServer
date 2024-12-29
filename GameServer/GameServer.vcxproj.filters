@@ -10,6 +10,9 @@
     <Filter Include="Main\Protocol">
       <UniqueIdentifier>{b96bead4-28dc-469c-8db6-34283615c87a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameContents">
+      <UniqueIdentifier>{ff636853-f87d-40e4-9542-776f8ee8357f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp">
@@ -39,6 +42,12 @@
     <ClCompile Include="Enum.pb.cc">
       <Filter>Main\Protocol</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>GameContents</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>GameContents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -64,6 +73,12 @@
     </ClInclude>
     <ClInclude Include="Enum.pb.h">
       <Filter>Main\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>GameContents</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>GameContents</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

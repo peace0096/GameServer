@@ -3,9 +3,9 @@ package Protocol;
 
 import "Enum.proto";
 
-message BuffData
+message Player
 {
-	uint64 buffId = 1;
-	float remainTime = 2;
-	repeated uint64 victims = 3;	// 리스트처럼, 반복적인 형태가 들어올 경우
+	uint64 id = 1;
+	string name = 2;
+	PlayerType playerType = 3;
 }
